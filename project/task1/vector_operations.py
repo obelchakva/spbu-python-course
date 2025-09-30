@@ -62,4 +62,4 @@ def angle_between_vectors(v1: List[float], v2: List[float]) -> float:
 
     float: angle between the two vectors in degrees.
     """
-    return degrees(acos(dot_product(v1, v2) / (vector_length(v1) * vector_length(v2))))
+    return degrees(acos(dot_product(v1, v2) / (magnitude(v1) * magnitude(v2))))
