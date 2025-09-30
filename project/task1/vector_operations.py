@@ -3,6 +3,7 @@ from typing import List
 
 # Vector operations
 
+
 def dot_product(v1, v2):
     """
     Calculate the dot product of two vectors
