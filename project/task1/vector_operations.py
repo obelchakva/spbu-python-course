@@ -4,7 +4,7 @@ from typing import List
 # Vector operations
 
 
-def dot_product(v1, v2):
+def dot_product(v1: List[float], v2: List[float]) -> float: # typehints has been added
     """
     Calculate the dot product of two vectors
 
