@@ -36,8 +36,8 @@ def test_multiply_matrices():  # The names of the variables have been replaced
 
     # Multiplication by a identity matrix
     a = [[1, 2], [3, 4]]
-    E = [[1, 0], [0, 1]]
-    assert multiply_matrices(a, E) == a
+    e = [[1, 0], [0, 1]]
+    assert multiply_matrices(a, e) == a
 
     # Test with zero elements
     a = [[0, 0], [0, 0]]
