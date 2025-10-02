@@ -3,7 +3,9 @@ from typing import List
 # Matrix operations
 
 
-def add_matrices(a: List[List[float]], b: List[List[float]]) -> List[List[float]]: # The names of the variables have been replaced
+def add_matrices(
+    a: List[List[float]], b: List[List[float]]
+) -> List[List[float]]:  # The names of the variables have been replaced
     """
     add two matrices
 
@@ -30,7 +32,9 @@ def add_matrices(a: List[List[float]], b: List[List[float]]) -> List[List[float]
     return result_m
 
 
-def multiply_matrices(a: List[List[float]], b: List[List[float]]) -> List[List[float]]: # The names of the variables have been replaced
+def multiply_matrices(
+    a: List[List[float]], b: List[List[float]]
+) -> List[List[float]]:  # The names of the variables have been replaced
     """
     Multiply two matrices
 
@@ -67,7 +71,9 @@ def multiply_matrices(a: List[List[float]], b: List[List[float]]) -> List[List[f
     return result_m
 
 
-def transpose_matrix(a: List[List[float]]) -> List[List[float]]: # The names of the variables have been replaced
+def transpose_matrix(
+    a: List[List[float]],
+) -> List[List[float]]:  # The names of the variables have been replaced
     """
     Transpose a matrix
 

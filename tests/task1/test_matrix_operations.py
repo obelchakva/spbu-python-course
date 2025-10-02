@@ -10,7 +10,7 @@ from project.task1.matrix_operations import (
 # Tests for matrix operations
 
 
-def test_add_matrices(): # The names of the variables have been replaced
+def test_add_matrices():  # The names of the variables have been replaced
     a = [[1, 2], [3, 4]]
     b = [[5, 6], [7, 8]]
     assert add_matrices(a, b) == [[6, 8], [10, 12]]
@@ -25,7 +25,7 @@ def test_add_matrices(): # The names of the variables have been replaced
     assert add_matrices(a, b) == [[1, 2], [3, 4]]
 
 
-def test_multiply_matrices(): # The names of the variables have been replaced
+def test_multiply_matrices():  # The names of the variables have been replaced
     a = [[1, 2], [3, 4]]
     b = [[5, 6], [7, 8]]
     assert multiply_matrices(a, b) == [[19, 22], [43, 50]]
@@ -55,7 +55,7 @@ def test_multiply_matrices(): # The names of the variables have been replaced
     assert multiply_matrices(a, b) == [[11]]
 
 
-def test_transpose_matrix(): # The names of the variables have been replaced
+def test_transpose_matrix():  # The names of the variables have been replaced
     a = [[1, 2, 3], [4, 5, 6]]
     assert transpose_matrix(a) == [[1, 4], [2, 5], [3, 6]]
 
