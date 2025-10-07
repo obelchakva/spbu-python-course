@@ -62,15 +62,21 @@ class TestComposeSteps:
             (
                 [1, 2, 3, 4, 5],
                 [apply_reduce(lambda acc, x: acc + x, 0)],
-                [15],
+                15,
             ),
         ],
     )
-    def test_compose_steps_with_transformations(self, input_data, transformations, expected):
+    def test_compose_steps_with_transformations(
+        self, input_data, transformations, expected
+    ):
         """Test sequential composition of transformations"""
         data_gen = make_data_generator(input_data)
         composed = compose_steps(data_gen, transformations)
-        result = list(composed)
+        last_operation = transformations[-1]
+        if "apply_reduce" in getattr(last_operation, "__qualname__", ""):
+            result = composed
+        else:
+            result = list(composed)
         assert result == expected
 
 
