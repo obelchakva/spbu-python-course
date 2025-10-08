@@ -1,4 +1,4 @@
-from typing import Callable, Generator, TypeVar, Iterable, Optional, Any
+from typing import Callable, Generator, TypeVar, Iterable, Optional, Any, List, Tuple
 from functools import reduce
 
 T = TypeVar("T")
@@ -21,7 +21,7 @@ def make_data_generator(data: Iterable[T]) -> Generator[T, None, None]:
 
 def compose_steps(
     source: Generator[T, None, None],
-    transformations: list[
+    transformations: List[
         Callable[[Generator[Any, None, None]], Generator[Any, None, None]]
     ],
 ) -> Generator[Any, None, None]:
@@ -105,7 +105,7 @@ def apply_reduce(
 
 def apply_zip(
     other_gen: Generator[U, None, None]
-) -> Callable[[Generator[T, None, None]], Generator[tuple[T, U], None, None]]:
+) -> Callable[[Generator[T, None, None]], Generator[Tuple[T, U], None, None]]:
     """
     Zips together two generators creating pairs of corresponding elements.
 
