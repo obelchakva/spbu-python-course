@@ -118,3 +118,41 @@ class TestAggregateResults:
         """Test collecting results with different methods"""
         result = aggregate_results(generator, collector)
         assert result == expected
+
+
+# CORRECTIONS:
+
+
+class TestBuiltinsAndCustomFunctions:
+    """Tests that check built-in map/filter/zip and custom user functions are supported"""
+
+    def test_compose_with_builtin_map_and_filter(self):
+        data_gen = make_data_generator([1, 2, 3, 4, 5])
+        transformations = [
+            # builtin map wrapped as a callable expecting an iterable
+            lambda gen: map(lambda x: x * 2, gen),
+            # builtin filter wrapped as callable
+            lambda gen: filter(lambda x: x > 5, gen),
+        ]
+        result = list(compose_steps(data_gen, transformations))
+        assert result == [6, 8, 10]
+
+    def test_compose_with_builtin_zip(self):
+        data_gen = make_data_generator([1, 2, 3])
+        other = make_data_generator([10, 20, 30])
+        transformations = [
+            apply_map(lambda x: x + 1),
+            lambda gen: zip(gen, other),
+        ]
+        result = list(compose_steps(data_gen, transformations))
+        assert result == [(2, 10), (3, 20), (4, 30)]
+
+    def test_compose_with_custom_user_function(self):
+        # Custom transformation implemented by user: must be accepted by compose_steps.
+        def custom_double(gen):
+            for x in gen:
+                yield x * 2
+
+        data_gen = make_data_generator([1, 2, 3])
+        result = list(compose_steps(data_gen, [custom_double]))
+        assert result == [2, 4, 6]
