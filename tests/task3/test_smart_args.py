@@ -17,7 +17,6 @@ def get_unique_value():
         ({"b": 5}, {"b": 5, "a": 0}, {"b": 5}),
     ],
 )
-
 def test_isolated(initial_dict, expected_dict, expected_original):
     """
     Test that Isolated prevents mutations across invocations.
@@ -41,7 +40,6 @@ def test_isolated(initial_dict, expected_dict, expected_original):
         (150, False, False),
     ],
 )
-
 def test_evaluated(override_y, expected_x_differs, expected_y):
     """
     Test that Evaluated computes the default value only once, and respects manual override.
@@ -55,13 +53,11 @@ def test_evaluated(override_y, expected_x_differs, expected_y):
     result2 = check_evaluation()
     result3 = check_evaluation(y=override_y)
 
-    assert (
-        result1[0] == result2[0] == result3[0]
-    )
+    assert result1[0] == result2[0] == result3[0]
     if expected_y:
         assert result1[1] != result2[1]
     else:
-        assert result3[1] == override_y 
+        assert result3[1] == override_y
 
 
 @pytest.mark.parametrize(
