@@ -8,7 +8,7 @@ V = TypeVar("V")
 
 def make_data_generator(
     data: Iterable[T],
-) -> Iterator[T]:  # CORRECTIONS: make_data_generator returns Iterator[T].
+) -> Iterator[T]:  # CORRECTIONS: implemented a generator
     """
     Creates a generator based on an iterable object.
 
@@ -18,7 +18,14 @@ def make_data_generator(
     Returns:
         Generator[Any, None, None]: Generator yielding elements one-by-one from the given iterable.
     """
-    yield from data
+    iterator = iter(data)
+
+    try:
+        while True:
+            item = next(iterator)
+            yield item
+    except StopIteration:
+        return
 
 
 def compose_steps(
