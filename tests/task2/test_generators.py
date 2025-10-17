@@ -1,6 +1,6 @@
 import pytest
 from typing import List, Tuple
-from itertools import chain
+from itertools import count, islice
 from functools import reduce
 from project.task2.generators import *
 
@@ -156,3 +156,170 @@ class TestBuiltinsAndCustomFunctions:
         data_gen = make_data_generator([1, 2, 3])
         result = list(compose_steps(data_gen, [custom_double]))
         assert result == [2, 4, 6]
+
+
+# CORRECTIONS:
+
+
+class TestLaziness:
+    """Tests demonstrating the lazy nature of the pipeline"""
+
+    def test_laziness_with_side_effects(self):
+        """Test that elements are processed only when consumed"""
+        processed_elements = []
+
+        def track_processing(gen):
+            for x in gen:
+                processed_elements.append(f"processed_{x}")
+                yield x
+
+        data_gen = make_data_generator([1, 2, 3, 4, 5])
+        transformations = [
+            track_processing,
+            apply_map(lambda x: x * 2),
+            apply_filter(lambda x: x > 5),
+        ]
+
+        # Pipeline created but not consumed yet
+        pipeline = compose_steps(data_gen, transformations)
+        assert (
+            processed_elements == []
+        ), "No elements should be processed before consumption"
+
+        first_element = next(pipeline)
+        assert first_element == 6
+        assert processed_elements == [
+            "processed_1",
+            "processed_2",
+            "processed_3",
+        ], "Should process elements until first match is found"
+
+        # Consume next element
+        second_element = next(pipeline)
+        assert second_element == 8
+        assert processed_elements == [
+            "processed_1",
+            "processed_2",
+            "processed_3",
+            "processed_4",
+        ]
+
+        # Consume remaining elements
+        remaining = list(pipeline)
+        assert remaining == [10]
+        assert processed_elements == [
+            "processed_1",
+            "processed_2",
+            "processed_3",
+            "processed_4",
+            "processed_5",
+        ]
+
+    def test_laziness_with_infinite_generator(self):
+        """Test that pipeline can work with infinite generators"""
+
+        def infinite_counter():
+            n = 0
+            while True:
+                yield n
+                n += 1
+
+        # Create pipeline with infinite generator
+        transformations = [
+            apply_filter(lambda x: x % 2 == 0),  # only even numbers
+            apply_map(lambda x: x * 10),  # multiply by 10
+        ]
+
+        pipeline = compose_steps(infinite_counter(), transformations)
+
+        # Take only first 5 elements from infinite stream
+        result = []
+        for i, value in enumerate(pipeline):
+            if i >= 5:
+                break
+            result.append(value)
+
+        assert result == [
+            0,
+            20,
+            40,
+            60,
+            80,
+        ], "Should be able to work with infinite generators"
+
+    def test_laziness_early_termination(self):
+        """Test that pipeline stops when result is found early"""
+        processed_count = [0]  # use list to allow modification in nested function
+
+        def counting_generator(data):
+            for item in data:
+                processed_count[0] += 1
+                yield item
+
+        data_gen = counting_generator([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
+        transformations = [apply_map(lambda x: x * 2), apply_filter(lambda x: x > 10)]
+
+        pipeline = compose_steps(data_gen, transformations)
+
+        # Take only first 2 elements that satisfy condition
+        result = []
+        for i, value in enumerate(pipeline):
+            if i >= 2:
+                break
+            result.append(value)
+
+        assert result == [12, 14]
+        assert (
+            processed_count[0] == 8
+        ), f"Should process exactly 8 elements, but processed {processed_count[0]}"
+
+    def test_laziness_no_processing_before_consumption(self):
+        """Test that nothing is processed before we start consuming"""
+        processed = []
+
+        def track_processing(gen):
+            for x in gen:
+                processed.append(x)
+                yield x
+
+        data_gen = make_data_generator([1, 2, 3, 4, 5])
+        transformations = [
+            track_processing,
+            apply_map(lambda x: x + 1),
+            apply_filter(lambda x: x % 2 == 0),
+            apply_map(lambda x: x * 3),
+        ]
+
+        pipeline = compose_steps(data_gen, transformations)
+
+        assert processed == [], "No elements should be processed before consumption"
+
+        first = next(pipeline)
+        assert first == 6
+        assert processed == [1], "Should process only the first element"
+
+    def test_laziness_with_islice(self):
+        """Test lazy processing with islice"""
+        processed = []
+
+        def infinite_sequence():
+            n = 0
+            while True:
+                processed.append(n)
+                yield n
+                n += 1
+
+        transformations = [
+            apply_filter(lambda x: x % 3 == 0),
+            apply_map(lambda x: x**2),
+        ]
+
+        pipeline = compose_steps(infinite_sequence(), transformations)
+
+        result = list(islice(pipeline, 4))
+
+        assert result == [0, 9, 36, 81]
+        assert (
+            len(processed) == 10
+        ), f"Should process only 10 elements, but processed {len(processed)}"
+        assert processed == [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]

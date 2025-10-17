@@ -1,5 +1,5 @@
 from typing import Callable, Iterator, TypeVar, Iterable, Optional, Any, List, Tuple
-from functools import reduce
+from functools import reduce, partial
 
 T = TypeVar("T")
 U = TypeVar("U")
@@ -71,7 +71,9 @@ def apply_map(
     Returns:
         Callable[[Generator[T, None, None]], Generator[V, None, None]]: Function wrapping the transformation logic.
     """
-    return lambda gen: map(transform, gen)
+    return partial(
+        map, transform
+    )  # CORRECTIONS: Replaced lambda gen: map(transform, gen) with partial(map, transform)
 
 
 def apply_filter(
@@ -88,7 +90,9 @@ def apply_filter(
     Returns:
         Callable[[Generator[T, None, None]], Generator[T, None, None]]: Filtered generator function.
     """
-    return lambda gen: filter(predicate, gen)
+    return partial(
+        filter, predicate
+    )  # CORRECTIONS: Replaced lambda gen: filter(predicate, gen) with partial(filter, predicate)
 
 
 def apply_reduce(
@@ -123,4 +127,6 @@ def apply_zip(
     Returns:
         Callable[[Generator[T, None, None]], Generator[Tuple[T, U], None, None]]: Zipped generator function.
     """
-    return lambda gen: zip(gen, other_gen)
+    return partial(
+        zip, other_gen
+    )  # CORRECTIONS: Replaced lambda gen: zip(gen, other_gen) with partial(zip, other_gen)
