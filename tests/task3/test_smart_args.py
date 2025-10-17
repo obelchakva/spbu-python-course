@@ -34,30 +34,30 @@ def test_isolated(initial_dict, expected_dict, expected_original):
 
 
 @pytest.mark.parametrize(
-    "override_y, expected_x_differs, expected_y",
+    "override_y, expected_y_different",  # CORRECTIONS: removed expected_x_differs
     [
-        (None, False, True),
-        (150, False, False),
+        (None, True),
+        (150, False),
     ],
 )
-def test_evaluated(override_y, expected_x_differs, expected_y):
-    """
-    Test that Evaluated computes the default value only once, and respects manual override.
-    """
-
+def test_evaluated(
+    override_y, expected_y_different
+):  # CORRECTIONS: removed expected_x_differs
     @smart_args
     def check_evaluation(*, x=get_unique_value(), y=Evaluated(get_unique_value)):
         return x, y
 
     result1 = check_evaluation()
     result2 = check_evaluation()
-    result3 = check_evaluation(y=override_y)
 
-    assert result1[0] == result2[0] == result3[0]
-    if expected_y:
-        assert result1[1] != result2[1]
-    else:
+    if override_y is not None:
+        result3 = check_evaluation(y=override_y)
         assert result3[1] == override_y
+
+    assert result1[0] == result2[0]
+
+    if expected_y_different:
+        assert result1[1] != result2[1]
 
 
 @pytest.mark.parametrize(

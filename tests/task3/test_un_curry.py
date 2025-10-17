@@ -1,4 +1,5 @@
 import pytest
+from unittest.mock import patch
 from project.task3.un_curry import curry_explicit, uncurry_explicit
 
 # Tests for curry_explicit
@@ -12,7 +13,9 @@ from project.task3.un_curry import curry_explicit, uncurry_explicit
 )
 def test_curry_explicit_valid_cases(args, expected):
     f = curry_explicit(lambda x, y, z: f"<{x}, {y}, {z}>", 3)
-    assert f(*args) == expected
+    # CORRECTIONS: Call with one argument at a time
+    result = f(args[0])(args[1])(args[2])
+    assert result == expected
 
 
 def test_curry_explicit_arity_zero():
@@ -38,9 +41,21 @@ def test_curry_explicit_invalid_arity(arity):
         curry_explicit(lambda x: x, arity)
 
 
+# CORRECTIONS: Check that print was called with correct arguments
+# CORRECTIONS: Check that return value is None (print returns None)
 def test_curry_explicit_function_with_arbitrary_args():
-    f = curry_explicit(print, 2)
-    assert f(1)(2) is None
+    """Tests currying with the built-in print function"""
+    with patch("builtins.print") as mock_print:
+        # Setting the return value to None to simulate a real print
+        mock_print.return_value = None
+
+        f = curry_explicit(print, 2)
+        result = f(1)(2)
+
+        # We check that print was called with the correct arguments.
+        mock_print.assert_called_once_with(1, 2)
+        # We check that the return value is None
+        assert result is None
 
 
 # Tests for uncurry_explicit
