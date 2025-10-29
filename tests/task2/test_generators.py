@@ -2,6 +2,10 @@ import pytest
 from typing import List, Tuple
 from itertools import chain
 from functools import reduce
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from project.task2.generators import *
 
 

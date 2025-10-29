@@ -1,8 +1,36 @@
 import pytest
 from unittest.mock import patch
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from project.task3.un_curry import curry_explicit, uncurry_explicit
 
-# Tests for curry_explicit
+
+def test_curry_explicit_single_argument_only():
+    """Тестирует, что каррированная функция принимает только по одному аргументу за раз"""
+    f = curry_explicit(lambda x, y, z: x + y + z, 3)
+
+    #  CORRECTIONS: Корректное использование - по одному аргументу
+    result = f(1)(2)(3)
+    assert result == 6
+
+    # CORRECTIONS: Проверяем, что НЕЛЬЗЯ передать несколько аргументов за раз
+    with pytest.raises((TypeError, AttributeError)):
+        f(1, 2)  # Пытаемся передать 2 аргумента сразу
+
+    # CORRECTIONS: Проверяем, что на каждом шаге возвращается функция (кроме последнего)
+    step1 = f(1)
+    assert callable(step1)
+
+    step2 = step1(2)
+    assert callable(step2)
+
+    final = step2(3)
+    assert not callable(final)
+    assert final == 6
+
+
 @pytest.mark.parametrize(
     "args, expected",
     [

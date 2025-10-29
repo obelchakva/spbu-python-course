@@ -1,5 +1,9 @@
 import pytest
 from itertools import count
+import sys
+import os
+
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 from project.task3.smart_args import smart_args, Isolated, Evaluated
 
 # Function to simulate unique values
