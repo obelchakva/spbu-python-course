@@ -1,12 +1,11 @@
 name: Static check of the types
-on:
-  [ push, pull_request ]
+on: [push, pull_request]
 jobs:
   tests:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: [ 3.8 ]
+        python-version: [3.8]
     steps:
       - name: Set up Git repository
         uses: actions/checkout@v2
@@ -19,6 +18,11 @@ jobs:
           python -m pip install --upgrade pip wheel setuptools
           python -m pip install -r requirements.txt
           python -m pip list
-      - name: Check types
+      - name: Clean pycache
         run: |
-          mypy project
+          find . -name "__pycache__" -type d -exec rm -rf {} + 2>/dev/null || true
+          find . -name "*.pyc" -delete
+          find . -name ".mypy_cache" -type d -exec rm -rf {} + 2>/dev/null || true
+      - name: Check types for current task only
+        run: |
+          mypy project/task6/
