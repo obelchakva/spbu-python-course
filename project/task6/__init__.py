@@ -1,3 +1,3 @@
-from .main import ThreadSafeHashTable
+from .multiprocessing import ThreadSafeHashTable
 
 __all__ = ["ThreadSafeHashTable"]

@@ -2,7 +2,7 @@ import pytest
 import time
 import logging
 from multiprocessing import Process, Manager
-from project.task6.main import ThreadSafeHashTable
+from project.task6.multiprocessing import ThreadSafeHashTable
 
 logging.getLogger("project.task6.main").setLevel(logging.CRITICAL)
 
