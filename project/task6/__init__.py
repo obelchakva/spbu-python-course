@@ -1,3 +1,3 @@
 from .main import ThreadSafeHashTable
 
-__all__ = ['ThreadSafeHashTable']
+__all__ = ["ThreadSafeHashTable"]
