@@ -13,7 +13,7 @@ def tets_methods():
     table["a1"] = 2
     assert table["a1"] == 2
     assert len(table) == 1
-    
+
     table["a2"] = 10
     assert table["a2"] == 10
     assert len(table) == 2
@@ -28,7 +28,7 @@ def tets_methods():
 
     with pytest.raises(KeyError):
         del table["a2"]
-    
+
     table.clear()
     assert len(table) == 0
 

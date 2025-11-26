@@ -2,8 +2,8 @@ import multiprocessing
 from collections.abc import MutableMapping
 from typing import Any, Iterator
 
-class MultiHashTable(MutableMapping):
 
+class MultiHashTable(MutableMapping):
     def __init__(self, ini_size: int = 32) -> None:
         """
         Initializes the MultiHashTable with the specified initial size.
@@ -13,7 +13,9 @@ class MultiHashTable(MutableMapping):
         """
         self.manager = multiprocessing.Manager()
         self.ini_size = ini_size
-        self.hash_table = self.manager.list([self.manager.list() for i in range(ini_size)])
+        self.hash_table = self.manager.list(
+            [self.manager.list() for i in range(ini_size)]
+        )
         self.locks = self.manager.list([self.manager.Lock() for i in range(ini_size)])
 
     def _hash(self, key: Any) -> int:
@@ -27,7 +29,7 @@ class MultiHashTable(MutableMapping):
             int: Hash value modulo the table size, representing the bucket index.
         """
         return hash(key) % self.ini_size
-    
+
     def __getitem__(self, key: Any) -> Any:
         """
         Retrieves the value associated with the specified key.
@@ -46,7 +48,7 @@ class MultiHashTable(MutableMapping):
             if k == key:
                 return v
         raise KeyError(key)
-    
+
     def __setitem__(self, key: Any, value: Any) -> None:
         """
         Sets the value for the specified key in the hash table.
@@ -82,7 +84,7 @@ class MultiHashTable(MutableMapping):
                     del cell[i]
                     return
             raise KeyError(key)
-        
+
     def __iter__(self) -> Iterator[Any]:
         """
         Returns an iterator over the keys in the hash table.
@@ -109,7 +111,7 @@ class MultiHashTable(MutableMapping):
             with self.locks[i]:
                 size += len(self.hash_table[i])
         return size
-    
+
     def __contains__(self, key: Any) -> bool:
         """
         Checks if the specified key exists in the hash table.
@@ -126,7 +128,7 @@ class MultiHashTable(MutableMapping):
             if item[0] == key:
                 return True
         return False
-    
+
     def clear(self) -> None:
         """
         Removes all key-value pairs from the hash table.
